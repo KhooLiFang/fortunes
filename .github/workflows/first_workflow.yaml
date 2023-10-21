@@ -1,8 +1,7 @@
 name: first workflow
 on:
-  push:
-    branches: 
-      - 'v[0-9]+\.[0-9]+'
+  push
+    #: branches: 
       #- 'v[0-9].[0-9]'
       #- '!v[0-9].[0-9]-*'
       #- '!v[0-9].[0-9].[0-9]'
@@ -12,7 +11,9 @@ on:
 jobs:
   my_first_ci:
     runs-on: ubuntu-latest
+    
     steps:
+
     - name: Checkout code
       id: checkout_code
       uses: actions/checkout@v2
