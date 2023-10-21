@@ -9,34 +9,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: checkout workflow
-      id: checkout_workflow
-      uses: actions/checkout@v3
-      with:
-          repository: ${{ github.repository }}
-          ref: ${{ github.ref }}
-          token: ${{ github.token }}
-          clean: true
-          sparse-checkout: null
-          sparse-checkout-cone-mode: true
-          fetch-depth: 1
-          fetch-tags: false
-          lfs: false 
-          submodules: false
-          set-safe-directory: true
-          github-server-url: https://github.com 
-
-    - name: check branch name
+    - name: Check branch name
       id: check_branch_name
       run: |
-        BRANCH_NAME="${{ github.ref }}"
-        if [[ "$BRANCH_NAME" =~ ^refs/heads/v[0-9]+\.[0-9]+$ ]]; then
-            echo "Branch name matches the pattern."
-        else
-            echo "Branch name does not match the pattern."
-        fi
+          BRANCH_NAME="${{ github.ref }}"
+          if [[ "$BRANCH_NAME" =~ ^refs/heads/v[0-9]+\.[0-9]+$ ]]; then
+              echo "Branch name matches the pattern."
+          else
+              echo "Branch name does not match the pattern."
+          fi
 
+    - name: Checkout code
+      id: checkout_code
+      uses: actions/checkout@v2
+        
+    - name: Run Trivy vulnerability scanner in fs mode
+      id: Run_Trivy
+      uses: aquasecurity/trivy-action@master
+      with: 
+        scan-type: 'fs'
+        scan-ref: '.'
+        trivy-config: trivy.yaml
 
+    - name: Send GitHub action trigger data to Slack workflow
+      id: send_to_slack
+      uses: slackapi/slack-github-action@v1.24.0
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TEST_URL }}
+
+    - name: Upload file to Slack
+      id: upload_file_to_slack
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_TEST_URL }}
+
+          
     - name: check commit message
       id: check_commit_message
       run: |
