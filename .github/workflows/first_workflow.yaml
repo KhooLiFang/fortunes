@@ -1,0 +1,72 @@
+name: first workflow
+on:
+  push:
+    branches: 
+      - 'v[0-9]+\.[0-9]+'
+    
+jobs:
+  my_first_ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout workflow
+      id: checkout_workflow
+      uses: actions/checkout@v3
+      with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          token: ${{ github.token }}
+          clean: true
+          sparse-checkout: null
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+          fetch-tags: false
+          lfs: false 
+          submodules: false
+          set-safe-directory: true
+          github-server-url: https://github.com 
+
+    - name: check branch name
+      id: check_branch_name
+      run: |
+        BRANCH_NAME="${{ github.ref }}"
+        if [[ "$BRANCH_NAME" =~ ^refs/heads/v[0-9]+\.[0-9]+$ ]]; then
+            echo "Branch name matches the pattern."
+        else
+            echo "Branch name does not match the pattern."
+        fi
+
+
+    - name: check commit message
+      id: check_commit_message
+      run: |
+        COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+        if [[ "$COMMIT_MESSAGE" == "#NORUN"* ]]; then
+            echo "Commit message starts with #NORUN. Skipping the workflow."
+            exit 1
+        else
+            echo "Commit message does not start with #NORUN. Continuing with the workflow."
+            exit 0
+        fi
+
+    - name: get date in Github
+      id: get_date_in_Github
+      run: echo "date in github $(date)"
+          
+    - name: list directory
+      id: list_directory
+      run: echo "$(ls -1)"
+    
+    - name: echo github context
+      id: echo_github_context
+      run: echo "ref_name ${{github.ref_name}}"
+
+    - name: echo github context2
+      id: echo_github_context2
+      run: echo "repository ${{github.repository}}"
+
+# Scan the code base for vulnerabilities
+# Containerized the Golang application
+# Push the image to Docker Hub
+# Digitally sign the image
+# Send notification to the use in Slack
