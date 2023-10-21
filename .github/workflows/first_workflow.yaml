@@ -2,27 +2,17 @@ name: first workflow
 on:
   push:
     branches: 
-      - 'v[0-9].[0-9]'
-      - '!v[0-9].[0-9]-*'
-      - '!v[0-9].[0-9].[0-9]'
-      - '!feature-*'
+      - 'v[0-9]+\.[0-9]+'
+      #- 'v[0-9].[0-9]'
+      #- '!v[0-9].[0-9]-*'
+      #- '!v[0-9].[0-9].[0-9]'
+      #- '!feature-*'
     
     
 jobs:
   my_first_ci:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check branch name
-      id: check_branch_name
-      run: |
-          BRANCH_NAME="${{ github.ref }}"
-          if [[ "$BRANCH_NAME" =~ ^refs/heads/v[0-9]+\.[0-9]+$ ]]; then
-              echo "Branch name matches the pattern."
-          else
-              echo "Branch name does not match the pattern."
-          fi
-
     - name: Checkout code
       id: checkout_code
       uses: actions/checkout@v2
