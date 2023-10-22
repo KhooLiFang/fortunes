@@ -33,7 +33,7 @@ jobs:
       id: send_to_slack
       uses: slackapi/slack-github-action@v1.24.0
       env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_TEST_URL }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_COLOR: '${{ job.status }}' # or a specific color like 'good' or '#ff00ff'
         SLACK_ICON: https://github.com/rtCamp.png?size=48
         SLACK_MESSAGE: 'Post Content :rocket:'
@@ -44,13 +44,13 @@ jobs:
       id: upload_file_to_slack
       uses: rtCamp/action-slack-notify@v2
       env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_TEST_URL }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     - name: dafault_Send GitHub Action trigger data to Slack workflow
       id: slack
       uses: slackapi/slack-github-action@v1.24.0
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TEST_URL }}      
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}      
 
     - name: Set up QEMU
       id: set_up_QEMU
