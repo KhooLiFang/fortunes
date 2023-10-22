@@ -28,7 +28,13 @@ jobs:
         scan-ref: '.'
         trivy-config: trivy.yaml
 
+    - name: Upload file to Slack
+      id: upload_file_to_slack
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+        
     - name: Send GitHub action trigger data to Slack workflow
       id: send_to_slack
       uses: slackapi/slack-github-action@v1.24.0
@@ -40,11 +46,7 @@ jobs:
         SLACK_TITLE: Post Title
         SLACK_USERNAME: KhooLiFang
 
-    - name: Upload file to Slack
-      id: upload_file_to_slack
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 
     - name: dafault_Send GitHub Action trigger data to Slack workflow
       id: slack
