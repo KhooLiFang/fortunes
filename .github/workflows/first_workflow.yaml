@@ -47,8 +47,6 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_MESSAGE: "Failed"
-
-
         
     - name: Send GitHub action trigger data to Slack workflow
       id: send_to_slack
@@ -65,15 +63,6 @@ jobs:
       #   SLACK_MESSAGE: 'Post Content :rocket:'
       #   SLACK_TITLE: Post Title
       #   SLACK_USERNAME: KhooLiFang
-
-
-
-
-    - name: dafault_Send GitHub Action trigger data to Slack workflow
-      id: slack
-      uses: slackapi/slack-github-action@v1.24.0
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}      
 
     - name: Set up QEMU
       id: set_up_QEMU
@@ -95,7 +84,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
           push: true
-          tags: user/app:latest        
+          tags: user/app:latest 
 
 
 
