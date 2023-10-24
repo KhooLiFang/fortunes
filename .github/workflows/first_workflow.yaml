@@ -13,6 +13,12 @@ jobs:
     # env:
       # SLACK_WEBHOOK_TEST_URL: ${{ secrets.SLACK_WEBHOOK_TEST_URL }}
     
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+
     steps:
 
     - name: Checkout code
@@ -23,28 +29,38 @@ jobs:
     - name: Run Trivy vulnerability scanner in fs mode
       id: Run_Trivy
       uses: aquasecurity/trivy-action@master
-      with: 
-        scan-type: 'fs'
-        scan-ref: '.'
-        trivy-config: trivy.yaml
+      with:
+        image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'HIGH'
+        output: 'output.txt'
 
     - name: Upload file to Slack
       id: upload_file_to_slack
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_MESSAGE: "Failed"
+
 
         
     - name: Send GitHub action trigger data to Slack workflow
       id: send_to_slack
-      uses: slackapi/slack-github-action@v1.24.0
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_COLOR: '${{ job.status }}' # or a specific color like 'good' or '#ff00ff'
-        SLACK_ICON: https://github.com/rtCamp.png?size=48
-        SLACK_MESSAGE: 'Post Content :rocket:'
-        SLACK_TITLE: Post Title
-        SLACK_USERNAME: KhooLiFang
+      uses: adrey/slack-file-upload-action@master
+      with:
+        token: ${{secrets.SLACK_TOKEN}}
+        path: output.txt
+        channel: ${{secrets.SLACK_CHANNEL}}
+      # env:
+      #   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #   SLACK_COLOR: '${{ job.status }}' # or a specific color like 'good' or '#ff00ff'
+      #   SLACK_ICON: https://github.com/rtCamp.png?size=48
+      #   SLACK_MESSAGE: 'Post Content :rocket:'
+      #   SLACK_TITLE: Post Title
+      #   SLACK_USERNAME: KhooLiFang
 
 
 
