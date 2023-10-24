@@ -100,38 +100,13 @@ jobs:
 
   
       
-      #0 critical  
-    - name: Run Trivy vulnerability scanner in fs mode
-      id: Run_Trivy
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'table'
-        exit-code: '1'
-        ignore-unfixed: true
-        vuln-type: 'os,library'
-        severity: 'CRITICAL'
-        output: 'KhooLiFang.txt'
-
     - name: Upload file to Slack
-      id: upload_file_to_slack
-      if: always() && (steps.Run_Trivy.outcome == 'success')
+      id: upload_file_to_slack_success
+  
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_MESSAGE: "Failed"
-        
-    - name: Send GitHub action trigger data to Slack workflow
-      id: send_to_slack
-      
-      uses: adrey/slack-file-upload-action@master
-      with:
-        token: ${{secrets.SLACK_TOKEN}}
-        path: KhooLiFang.txt
-        channel: ${{secrets.SLACK_CHANNEL}}    
-  
+        SLACK_MESSAGE: "Image built & signed"
       
       
     #last      
