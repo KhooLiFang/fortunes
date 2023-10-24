@@ -91,7 +91,7 @@ jobs:
 
     - name: Check install!
       run: cosign version
-
+      if: always() && (steps.Run_Trivy.outcome == 'success')
     - name: Sign the images with GitHub OIDC Token
       env:
         DIGEST: ${{ steps.build_and_push.outputs.digest }}
@@ -117,7 +117,7 @@ jobs:
 
     - name: Upload file to Slack
       id: upload_file_to_slack
-      
+      if: always() && (steps.Run_Trivy.outcome == 'success')
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
