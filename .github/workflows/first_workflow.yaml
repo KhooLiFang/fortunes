@@ -86,7 +86,17 @@ jobs:
           push: true
           tags: khoolifang/fortunes:latest 
 
+    - name: Install Cosign
+      uses: sigstore/cosign-installer@v3.1.1
 
+    - name: Check install!
+      run: cosign version
+
+    - name: Sign the images with GitHub OIDC Token
+      env:
+        DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        TAGS: khoolifang/fortunes:latest 
+      run: cosign sign --yes "${TAGS}@${DIGEST}"
 
     #last      
     - name: check commit message
