@@ -38,7 +38,7 @@ jobs:
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL'
-        output: 'output.txt'
+        output: 'KhooLiFang.txt'
 
     - name: Upload file to Slack
       id: upload_file_to_slack
@@ -54,7 +54,7 @@ jobs:
       uses: adrey/slack-file-upload-action@master
       with:
         token: ${{secrets.SLACK_TOKEN}}
-        path: output.txt
+        path: KhooLiFang.txt
         channel: ${{secrets.SLACK_CHANNEL}}
       # env:
       #   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -111,6 +111,23 @@ jobs:
             exit 0
         fi
 
+    #repeat
+    - name: Upload file to Slack
+      id: upload_file_to_slack
+      if: always() && (steps.Run_Trivy.outcome == 'failure')
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_MESSAGE: "Failed"
+        
+    - name: Send GitHub action trigger data to Slack workflow
+      id: send_to_slack
+      uses: adrey/slack-file-upload-action@master
+      with:
+        token: ${{secrets.SLACK_TOKEN}}
+        path: KhooLiFang.txt
+        channel: ${{secrets.SLACK_CHANNEL}}
+        
     #toDelete
     - name: get date in Github
       id: get_date_in_Github
