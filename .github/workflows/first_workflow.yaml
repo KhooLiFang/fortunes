@@ -39,6 +39,7 @@ jobs:
         output: 'output.txt'
 
     - name: Upload file to Slack
+      if: always() && (steps.Run_Trivy.outcome == 'failure')
       id: upload_file_to_slack
       uses: rtCamp/action-slack-notify@v2
       env:
