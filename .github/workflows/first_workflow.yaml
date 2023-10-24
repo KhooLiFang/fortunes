@@ -39,8 +39,8 @@ jobs:
         output: 'output.txt'
 
     - name: Upload file to Slack
-      if: always() && (steps.Run_Trivy.outcome == 'failure')
       id: upload_file_to_slack
+      if: always() && (steps.Run_Trivy.outcome == 'failure')
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -50,6 +50,7 @@ jobs:
         
     - name: Send GitHub action trigger data to Slack workflow
       id: send_to_slack
+      if: always() && (steps.Run_Trivy.outcome == 'failure')
       uses: adrey/slack-file-upload-action@master
       with:
         token: ${{secrets.SLACK_TOKEN}}
@@ -64,7 +65,7 @@ jobs:
       #   SLACK_USERNAME: KhooLiFang
 
 
-      
+
 
     - name: dafault_Send GitHub Action trigger data to Slack workflow
       id: slack
