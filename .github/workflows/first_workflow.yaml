@@ -40,8 +40,8 @@ jobs:
         severity: 'CRITICAL'
         output: 'KhooLiFang.txt'
 
-    - name: Upload file to Slack
-      id: upload_file_to_slack
+    - name: send message to slack
+      id: send_message_to_slack
       if: always() && (steps.Run_Trivy.outcome == 'failure')
       uses: rtCamp/action-slack-notify@v2
       env:
@@ -100,7 +100,7 @@ jobs:
 
   
       
-    - name: Upload file to Slack
+    - name: Upload file to Slack Success
       id: upload_file_to_slack_success
   
       uses: rtCamp/action-slack-notify@v2
