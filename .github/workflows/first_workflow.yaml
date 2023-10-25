@@ -90,13 +90,18 @@ jobs:
       run: cosign sign --yes "${TAGS}@${DIGEST}"
 
   
-      
+  
     - name: Upload file to Slack Success
       id: upload_file_to_slack_success
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_MESSAGE: "Image built & signed"
+        SLACK_MESSAGE: "<h3><strong>Image build & signed<strong></h3><br>
+                        <p><strong>Name:</strong> Khoo Li Fang</p><br>
+                        <p><strong>Matriculation:</strong> A0269794A</p><br>
+                        <p><strong>Email:</strong> e1114566@u.nus.edu</p><br>
+                        <p><strong>Git:</strong> https://github.com/KhooLiFang/fortunes</p><br>
+                        <p><strong>Docker:</strong> https://hub.docker.com/r/khoolifang/fortunes/tags</p>"
       
           
     - name: check commit message
