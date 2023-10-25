@@ -1,17 +1,16 @@
 name: first workflow
 on:
-- push
-    #: branches: 
-      #- 'v[0-9].[0-9]'
-      #- '!v[0-9].[0-9]-*'
-      #- '!v[0-9].[0-9].[0-9]'
-      #- '!feature-*'
+  push:
+    branches:
+      - 'v[0-9].[0-9]'
+      - '!v[0-9].[0-9]-*'
+      - '!v[0-9].[0-9].[0-9]'
+      - '!feature-*'
 
 jobs:
   my_first_ci:
     runs-on: ubuntu-latest
-    # env:
-      # SLACK_WEBHOOK_TEST_URL: ${{ secrets.SLACK_WEBHOOK_TEST_URL }}
+
     
     permissions:
       contents: read
@@ -24,8 +23,7 @@ jobs:
     - name: Checkout code
       id: checkout_code
       uses: actions/checkout@v2
-    
-    #0 critical  
+      
     - name: Run Trivy vulnerability scanner in fs mode
       id: Run_Trivy
       uses: aquasecurity/trivy-action@master
@@ -37,7 +35,7 @@ jobs:
         exit-code: '1'
         ignore-unfixed: true
         vuln-type: 'os,library'
-        severity: 'CRITICAL'
+        severity: 'HIGH'
         output: 'KhooLiFang.txt'
 
     - name: send message to slack
@@ -46,7 +44,7 @@ jobs:
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_MESSAGE: "Failed"
+        SLACK_MESSAGE: "Failed trivy scan,see uploaded report"
         
     - name: Send GitHub action trigger data to Slack workflow
       id: send_to_slack
@@ -56,13 +54,6 @@ jobs:
         token: ${{secrets.SLACK_TOKEN}}
         path: KhooLiFang.txt
         channel: ${{secrets.SLACK_CHANNEL}}
-      # env:
-      #   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-      #   SLACK_COLOR: '${{ job.status }}' # or a specific color like 'good' or '#ff00ff'
-      #   SLACK_ICON: https://github.com/rtCamp.png?size=48
-      #   SLACK_MESSAGE: 'Post Content :rocket:'
-      #   SLACK_TITLE: Post Title
-      #   SLACK_USERNAME: KhooLiFang
 
     - name: Set up QEMU
       id: set_up_QEMU
@@ -102,14 +93,12 @@ jobs:
       
     - name: Upload file to Slack Success
       id: upload_file_to_slack_success
-  
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_MESSAGE: "Image built & signed"
       
-      
-    #last      
+          
     - name: check commit message
       id: check_commit_message
       run: |
@@ -121,26 +110,3 @@ jobs:
             echo "Commit message does not start with #NORUN. Continuing with the workflow."
             exit 0
         fi
-
-    #toDelete
-    - name: get date in Github
-      id: get_date_in_Github
-      run: echo "date in github $(date)"
-          
-    - name: list directory
-      id: list_directory
-      run: echo "$(ls -1)"
-    
-    - name: echo github context
-      id: echo_github_context
-      run: echo "ref_name ${{github.ref_name}}"
-
-    - name: echo github context2
-      id: echo_github_context2
-      run: echo "repository ${{github.repository}}"
-
-# Scan the code base for vulnerabilities
-# Containerized the Golang application
-# Push the image to Docker Hub
-# Digitally sign the image
-# Send notification to the use in Slack
