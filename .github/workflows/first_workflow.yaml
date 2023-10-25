@@ -57,17 +57,14 @@ jobs:
 
     - name: Set up QEMU
       id: set_up_QEMU
-      if: always() && (steps.Run_Trivy.outcome == 'success')
       uses: docker/setup-qemu-action@v3
       
     - name: Set up Docker Buildx
       id: set_up_Docker_Buildx
-      if: always() && (steps.Run_Trivy.outcome == 'success')
       uses: docker/setup-buildx-action@v3
       
     - name: Login to Docker Hub
       id: login_to_Docker_Hub
-      if: always() && (steps.Run_Trivy.outcome == 'success')
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -75,7 +72,6 @@ jobs:
 
     - name: Build and push
       id: build_and_push
-      if: always() && (steps.Run_Trivy.outcome == 'success')
       uses: docker/build-push-action@v5
       with:
           push: true
@@ -83,17 +79,14 @@ jobs:
 
     - name: Install Cosign
       id: install_Cosign
-      if: always() && (steps.Run_Trivy.outcome == 'success')
       uses: sigstore/cosign-installer@v3.1.1
 
     - name: Check install
       id: check_install
-      if: always() && (steps.Run_Trivy.outcome == 'success')
       run: cosign version
       
     - name: Sign the images with GitHub OIDC Token
       id: sign_image_w_GitHub_Token
-      if: always() && (steps.Run_Trivy.outcome == 'success')
       env:
         DIGEST: ${{ steps.build_and_push.outputs.digest }}
         TAGS: khoolifang/fortunes:latest 
