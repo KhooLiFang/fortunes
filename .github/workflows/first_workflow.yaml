@@ -96,18 +96,13 @@ jobs:
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_MESSAGE: >
-          *Image build & signed*
-        SLACK_MESSAGE2: >
-          *Name:* Khoo Li Fang
-        SLACK_MESSAGE3: >
-          *Matriculation:* A0269794A
-        SLACK_MESSAGE4: >
-          *Email:* e1114566@u.nus.edu
-        SLACK_MESSAGE5: >
-          *Git:* https://github.com/KhooLiFang/fortunes
-        SLACK_MESSAGE6: >
-          *Docker:* https://hub.docker.com/r/khoolifang/fortunes/tags
+        SLACK_MESSAGE: "
+          *Image build & signed*\n
+          *Name:* Khoo Li Fang\n
+          *Matriculation:* A0269794A\n
+          *Email:* e1114566@u.nus.edu\n
+          *Git:* https://github.com/KhooLiFang/fortunes\n
+          *Docker:* https://hub.docker.com/r/khoolifang/fortunes/tags"
       
           
     - name: check commit message
