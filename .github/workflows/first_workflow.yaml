@@ -2,7 +2,6 @@ name: CICD Workshop
 on:
   push:
     branches:
-      - '*v[0-9]\.[0-9]'
       - 'v[0-9]\.[0-9]'
       - '!v[0-9]\.[0-9]-*'
       - '!v[0-9]\.[0-9]\.[0-9]'
@@ -36,7 +35,7 @@ jobs:
         exit-code: '1'
         ignore-unfixed: true
         vuln-type: 'os,library'
-        severity: 'HIGH'
+        severity: 'CRITICAL'
         output: 'KhooLiFang.txt'
 
     - name: send message to slack
@@ -45,7 +44,7 @@ jobs:
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_MESSAGE: "Failed trivy scan,see uploaded report"
+        SLACK_MESSAGE: "Failed trivy scan, see uploaded report"
         
     - name: Send GitHub action trigger data to Slack workflow
       id: send_to_slack
@@ -79,12 +78,15 @@ jobs:
           tags: khoolifang/fortunes:latest 
 
     - name: Install Cosign
+      id: install_Cosign
       uses: sigstore/cosign-installer@v3.1.1
 
-    - name: Check install!
+    - name: Check install
+      id: check_install
       run: cosign version
-      if: always() && (steps.Run_Trivy.outcome == 'success')
+      
     - name: Sign the images with GitHub OIDC Token
+      id: sign_image_w_GitHub_Token
       env:
         DIGEST: ${{ steps.build_and_push.outputs.digest }}
         TAGS: khoolifang/fortunes:latest 
@@ -94,19 +96,22 @@ jobs:
   
     - name: Upload file to Slack Success
       id: upload_file_to_slack_success
+      if: always() && (steps.Run_Trivy.outcome == 'success')
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_MESSAGE: "<h3><strong>Image build & signed<strong></h3><br>
-                        <p><strong>Name:</strong> Khoo Li Fang</p><br>
-                        <p><strong>Matriculation:</strong> A0269794A</p><br>
-                        <p><strong>Email:</strong> e1114566@u.nus.edu</p><br>
-                        <p><strong>Git:</strong> https://github.com/KhooLiFang/fortunes</p><br>
-                        <p><strong>Docker:</strong> https://hub.docker.com/r/khoolifang/fortunes/tags</p>"
+        SLACK_MESSAGE: "
+          *Image build & signed*\n
+          *Name:* Khoo Li Fang\n
+          *Matriculation:* A0269794A\n
+          *Email:* e1114566@u.nus.edu\n
+          *Git:* https://github.com/KhooLiFang/fortunes\n
+          *Docker:* https://hub.docker.com/r/khoolifang/fortunes/tags"
       
           
     - name: check commit message
       id: check_commit_message
+      if: always() && (steps.Run_Trivy.outcome == 'success')
       run: |
         COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
         if [[ "$COMMIT_MESSAGE" == "#NORUN"* ]]; then
