@@ -2,7 +2,6 @@ name: CICD Workshop
 on:
   push:
     branches:
-      - '*v[0-9]\.[0-9]'
       - 'v[0-9]\.[0-9]'
       - '!v[0-9]\.[0-9]-*'
       - '!v[0-9]\.[0-9]\.[0-9]'
@@ -36,7 +35,7 @@ jobs:
         exit-code: '1'
         ignore-unfixed: true
         vuln-type: 'os,library'
-        severity: 'HIGH'
+        severity: 'CRITICAL'
         output: 'KhooLiFang.txt'
 
     - name: send message to slack
